@@ -41,7 +41,6 @@ function main() {
             case "Add Inventory to Existing Product":
                 connection.query("SELECT * FROM products", (err, results) => {
                     console.table(results);
-                    console.log(results);
                     inquirer.prompt([
                         {
                             type: "input",
@@ -66,7 +65,7 @@ function main() {
                     ]).then(response => {
                         let item_chosen = results.find(obj => { return obj.item_id === parseInt(response.choice); });
                         let newQuantity = parseInt(item_chosen.stock_quantity) + parseInt(response.quantity);
-                        connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity: newQuantity},{item_id: response.choice}],(err, res) => {if (err) throw err;});
+                        connection.query("UPDATE products SET ? WHERE ?", [{ stock_quantity: newQuantity }, { item_id: response.choice }], (err, res) => { if (err) throw err; });
                         main();
                     })
                 })
@@ -97,15 +96,14 @@ function main() {
                     connection.query(
                         "INSERT INTO products SET ?",
                         {
-                          product_name: response.productName,
-                          department_name: response.productDepartment,
-                          price: response.productPrice,
-                          stock_quantity: response.productStock
+                            product_name: response.productName,
+                            department_name: response.productDepartment,
+                            price: response.productPrice,
+                            stock_quantity: response.productStock
                         },
-                        (err, res) => {if (err) throw err;}
-                        
-                      );
-                      main();
+                        (err, res) => { if (err) throw err; }
+                    );
+                    main();
                 })
                 break;
             case "Exit":
